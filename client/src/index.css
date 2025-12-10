@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+/* Fonts */
+
 @font-face {
     font-family: 'Determination Mono';
-    src: url('./fonts/DeterminationMonoPolish.otf') format('opentype');
+    src: url('./fonts/DeterminationMonoPolish.otf') format("opentype");
 }
 
 @font-face {
@@ -10,8 +12,12 @@
     src: url("./fonts/digital.regular.ttf");
 }
 
+/* Custom theming */
+
 @theme {
     --font-digital: digital, sans-serif;
+    --font-determination: 'Determination Mono';
+
     --text-bell-schedule: clamp(1rem, 2.5vw, 3rem);
     --text-bottom-controls: clamp(2rem, 4vw, 4rem);
     --text-big-timer: clamp(3rem, 5vw, 5rem);
@@ -20,4 +26,29 @@
     --color-tv-lawngreen: lawngreen;
     --color-tv-video-border: rgb(44, 44, 44);
     --color-tv-header: rgb(98, 196, 0);
+
+    --color-lightblue: #EBEFFF
+}
+
+/* Hacks to disable dragging/selecting + complicated styles */
+
+.hoverable-button {
+    @apply  relative w-16 h-16 m-2 rounded-full bg-lightblue 
+            border-solid border-4 border-[#385CFF80]
+            flex flex-col justify-center items-center box-content;
+
+    transition: 0.1s;
+}
+
+.hoverable-button, .hoverable-button > * {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.hoverable-button:hover {
+    @apply border-solid border-8 border-[#385CFF99]
+}
+
+.shadow-navbutton {
+    text-shadow: 1px 1px 2px black, 0 0 2px black, 2px 2px 2px black, -1px -1px 4px black, 1px 1px 2px black;
 }
