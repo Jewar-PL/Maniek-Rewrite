@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'Determination Mono';
+    src: url('./fonts/DeterminationMonoPolish.otf') format('opentype');
+}
+
+@font-face {
+    font-family: digital;
+    src: url("./fonts/digital.regular.ttf");
+}
+
+@theme {
+    --font-digital: digital, sans-serif;
+    --text-bell-schedule: clamp(1rem, 2.5vw, 3rem);
+    --text-bottom-controls: clamp(2rem, 4vw, 4rem);
+    --text-big-timer: clamp(3rem, 5vw, 5rem);
+
+    --color-tv-green: green;
+    --color-tv-lawngreen: lawngreen;
+    --color-tv-video-border: rgb(44, 44, 44);
+    --color-tv-header: rgb(98, 196, 0);
+}
