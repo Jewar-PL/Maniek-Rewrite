@@ -1,9 +1,14 @@
 import { Outlet } from "react-router";
 
-// TODO: Finish the layout, add the navbar
+import Navbar from "@/components/Navbar";
+
+// TODO: Finish the layout
 function Layout() {
     return (
-        <Outlet />
+        <div>
+            <Outlet />
+            <Navbar />
+        </div>
     )
 }
 
