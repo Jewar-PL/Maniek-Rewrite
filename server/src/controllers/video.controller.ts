@@ -10,11 +10,8 @@ async function streamFile(req: Request, res: Response) {
 
     const filePath = path.join(__dirname, "..", "..", "videos", file);
 
-    // Checking if this file exists, return 404 otherwise
-    try {
-        await fsPromises.access(filePath, fs.constants.F_OK);
-    } catch {
-        return res.status(404).json({ error: `File not found, path: ${filePath}` });
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: "File not found" });
     }
 
     const fileData = await fsPromises.stat(filePath);
