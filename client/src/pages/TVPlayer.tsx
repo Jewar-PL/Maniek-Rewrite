@@ -3,7 +3,6 @@ import winkCentered from "@/assets/faces/wink-centered.gif";
 
 import VideoPlayer from "@/components/VideoPlayer";
 
-// TODO: Move localhost address into some constant perhaps
 function TVPlayer() {
   const { clock, state } = useBellSchedule();
 
