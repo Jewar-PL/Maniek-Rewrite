@@ -1,0 +1,43 @@
+/* Hacks to disable dragging/selecting + complicated styles */
+/* TODO: Prettify these classes, they're ugly as hell */
+
+@reference "tailwindcss";
+
+.navbutton {
+    @apply  relative w-16 h-16 m-2 rounded-full bg-lightblue 
+            border-solid border-4 border-[#385CFF80]
+            flex flex-col justify-center items-center box-content;
+
+    transition: 0.1s;
+}
+
+.navbutton, .navbutton > * {
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.navbutton:hover {
+    @apply border-solid border-8 border-[#385CFF99]
+}
+
+.navbutton-shadow {
+    text-shadow: 1px 1px 2px black, 0 0 2px black, 2px 2px 2px black, -1px -1px 4px black, 1px 1px 2px black;
+}
+
+.navbutton-selected::after {
+    /* content: "";
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+    border-bottom: 1.7em solid rgba(0, 0, 0, 0.5);
+    z-index: 10; */
+
+    @apply  absolute top-[85%] left-[50%] translate-x-[-50%] w-0 h-0 
+            border-l-transparent border-r-transparent border-b-[#00000080]
+            border-l-8 border-r-8 border-b-27 border-t-0 border-solid z-10 content-none
+}
