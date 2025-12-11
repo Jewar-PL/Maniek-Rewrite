@@ -1,6 +1,10 @@
 import { EventEmitter } from "events";
+import * as fs from "fs";
+import * as path from "path";
 
 import { usb, Device } from "usb";
+import * as drivelist from "drivelist";
+
 
 // TODO: Simplify the interfaces???
 
