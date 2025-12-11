@@ -12,7 +12,7 @@ function TVPlayer() {
       {/* TODO: Make these calcs prettier */}
       <div className="flex w-[calc(100%-1rem)] h-[calc(100vh-9rem)]">
         <video loop autoPlay muted className="w-[80%] h-auto block border-3 border-[#2C2C2C] border-solid">
-          <source type="video/mp4" src="http://localhost:8080/LEGO1.mp4" />
+          <source type="video/mp4" src="http://localhost:8080/api/video/stream/LEGO1.mp4" />
         </video>
 
         <div className="
