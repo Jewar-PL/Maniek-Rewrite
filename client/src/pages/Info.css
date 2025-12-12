@@ -1,0 +1,14 @@
+@reference "tailwindcss";
+
+.socials-image {
+    @apply  h-16 w-auto p-4 rounded-2xl border-16 border-solid cursor-pointer;
+
+    background-color: rgba(141, 162, 255, 0.2);
+    border-color: rgba(100, 129, 255, 0.2);
+    transition: 0.1s;
+}
+
+.socials-image:hover {
+    transform: scale(1.1);
+    border-color: #ebefff;
+}

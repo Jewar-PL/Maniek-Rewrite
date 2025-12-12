@@ -4,7 +4,7 @@
 @reference "tailwindcss";
 
 .navbutton {
-    @apply  relative w-16 h-16 m-2 rounded-full bg-lightblue 
+    @apply  relative w-16 h-16 m-2 rounded-full
             border-solid border-4 border-[#385CFF80]
             flex flex-col justify-center items-center box-content;
 
@@ -24,6 +24,7 @@
     text-shadow: 1px 1px 2px black, 0 0 2px black, 2px 2px 2px black, -1px -1px 4px black, 1px 1px 2px black;
 }
 
+/* TODO: Fix this gray arrow thing, cuz it doesn't appe */
 .navbutton-selected::after {
     /* content: "";
     position: absolute;

@@ -29,7 +29,7 @@ function NavButton({ to, end, children, ...props }: NavButtonProps) {
         <NavLink 
             to={to} 
             end={end} 
-            className={({ isActive }) => `navbutton ${isActive && "navbutton-selected"}`}
+            className={({ isActive }) => `navbutton bg-lightblue ${isActive && "navbutton-selected"}`}
             {...props}
         >
             {children}
