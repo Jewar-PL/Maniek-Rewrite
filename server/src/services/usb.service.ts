@@ -1,9 +1,9 @@
 import { EventEmitter } from "events";
-import * as fs from "fs";
-import * as path from "path";
+import fs from "fs";
+import path from "path";
 
 import { usb, Device } from "usb";
-import * as drivelist from "drivelist";
+import drivelist from "drivelist";
 
 
 // TODO: Simplify the interfaces???

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import * as fs from "fs";
-import * as fsPromises from "fs/promises";
-import * as path from "path";
+import fs from "fs";
+import fsPromises from "fs/promises";
+import path from "path";
 
 // TODO: Handle priority and regular
 async function streamFile(req: Request, res: Response) {
