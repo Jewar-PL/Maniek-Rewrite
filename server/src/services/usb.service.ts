@@ -34,13 +34,32 @@ class USBService extends EventEmitter {
         usb.on("detach", this.onDetach.bind(this));
     }
 
+    /**
+     * Emits the `usbAttached` event ONLY if a correct USB device has been connected and the videos got copied successfully
+     * @param dev USB device that got attached, currently unused
+     */
     private async onAttach(dev: Device) {
         // The handle waits a short amount of time to make sure the drive mounts properly
         // TODO: Take care of this in a better way
         await wait(1500);
 
         // 1. Get eligible mountpoint
+        const mountpoint = await this.getEligibleMountpoint();
+        if (!mountpoint) return;
+
         // 2. Check if content in project_root/server/videos is different than mountpoint_root
+        const mpRoot = mountpoint.path;
+        const prioritySource = path.join(mpRoot, "priority");
+        const regularSource = path.join(mpRoot, "regular");
+
+        const projectVideosRoot = path.join(__dirname, "..", "..", "videos");
+        const priorityDest = path.join(projectVideosRoot, "priority");
+        const regularDest = path.join(projectVideosRoot, "regular");
+
+        this.ensureServerFoldersExist();
+
+
+
         // 3. Swap out videos if they are different
         // 4. Emit event
 
@@ -50,6 +69,19 @@ class USBService extends EventEmitter {
     private async onDetach(dev: Device) {
         // TODO: Do something here, or remove?
         this.emit("usbDetached", dev);
+    }
+
+    /**
+     * Checks if `videos`, `videos/priority` and `videos/regular` exist on the server, creates them if needed
+     */
+    private ensureServerFoldersExist() {
+        const projectVideosRoot = path.join(__dirname, "..", "..", "videos");
+        const priority = path.join(projectVideosRoot, "priority");
+        const regular = path.join(projectVideosRoot, "regular");
+
+        if (!fs.existsSync(projectVideosRoot)) fs.mkdirSync(projectVideosRoot);
+        if (!fs.existsSync(priority)) fs.mkdirSync(priority);
+        if (!fs.existsSync(regular)) fs.mkdirSync(regular);
     }
 
     // TODO: Pass a drive as an argument instead of checking all of them here?
@@ -99,6 +131,34 @@ class USBService extends EventEmitter {
         ]);
 
         return Boolean((priority && priority.isDirectory()) && (regular && regular.isDirectory()));
+    }
+
+    /**
+     * Copies files from one place to another
+     * @param source Path to where the files will be taken from
+     * @param dest Path to where the files will be copied to
+     */
+    private async copyFiles(source: string, dest: string) {
+        const exists = await fsPromises
+            .access(source)
+            .then(() => true)
+            .catch(() => false); 
+
+        if (!exists) return;
+
+        const entries = await fsPromises.readdir(source, { withFileTypes: true });
+        for (const entry of entries) {
+            if (!entry.isFile()) continue;
+
+            const sourcePath = path.join(source, entry.name);
+            const destPath = path.join(dest, entry.name);
+
+            await fsPromises
+                .copyFile(sourcePath, destPath)
+                .catch(err => console.error(
+                    `File copy failed, source: ${sourcePath}, dest: ${destPath}, error: ${err}`
+                ));
+        }
     }
 }
 
