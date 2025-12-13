@@ -6,13 +6,12 @@ import path from "path";
 import { usb, Device } from "usb";
 import * as drivelist from "drivelist";
 
-
 // TODO: Simplify the interfaces???
 
 const wait = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 interface USBServiceEvents {
-    "usbAttached": (dev: Device) => void;
+    "usbAttached": ({ device, filesChanged }: { device: Device, filesChanged: boolean }) => void;
     "usbDetached": (dev: Device) => void;
 }
 
@@ -26,6 +25,7 @@ declare interface USBService {
     ): boolean;
 }
 
+// TODO: Many of the methods are async, but should they really be?
 class USBService extends EventEmitter {
     constructor() {
         super();
@@ -35,16 +35,29 @@ class USBService extends EventEmitter {
     }
 
     private async onAttach(dev: Device) {
-        // The handle waits a short amount of time to make sure the drive mounts properly
-        // TODO: Take care of this in a better way
-        await wait(1500);
+        try {
+            // The handle waits a short amount of time to make sure the drive mounts properly
+            await wait(1500);
 
-        // 1. Get eligible mountpoint
-        // 2. Check if content in project_root/server/videos is different than mountpoint_root
-        // 3. Swap out videos if they are different
-        // 4. Emit event
+            const mountpoint = await this.getEligibleMountpoint();
+            if (!mountpoint) return;
 
-        this.emit("usbAttached", dev);
+            await this.ensureLocalFoldersExist();
+            
+            const pDiff = await this.hasDifferentFiles(mountpoint, "priority");
+            const rDiff = await this.hasDifferentFiles(mountpoint, "regular");
+
+            if (pDiff) await this.replaceFiles(mountpoint, "priority");
+            if (rDiff) await this.replaceFiles(mountpoint, "regular");
+
+            this.emit("usbAttached", { 
+                device: dev, 
+                filesChanged: pDiff || rDiff 
+            });
+        } catch (err) {
+            console.error(`USB sync error: ${err}`);
+            // TODO: Should it still emit?
+        }
     }
 
     private async onDetach(dev: Device) {
@@ -68,11 +81,7 @@ class USBService extends EventEmitter {
         );
 
         for (const drive of usbDrives) {
-            console.log(`Checking drive: ${drive.description}`);
-
             for (const mp of drive.mountpoints) {
-                console.log(`Checking mountpoint: ${mp.path}`);
-
                 const hasProperStructure = await this.hasProperFolderStructure(mp);
                 
                 if (hasProperStructure) return mp;
@@ -99,6 +108,44 @@ class USBService extends EventEmitter {
         ]);
 
         return Boolean((priority && priority.isDirectory()) && (regular && regular.isDirectory()));
+    }
+
+    private async ensureLocalFoldersExist() {
+        const localRoot = path.join(__dirname, "..", "..", "videos");
+        
+        await fsPromises.mkdir(path.join(localRoot, "priority"), { recursive: true });
+        await fsPromises.mkdir(path.join(localRoot, "regular"), { recursive: true });
+    }
+
+    private async hasDifferentFiles(mp: drivelist.Mountpoint, folder: "priority" | "regular") {
+        const localPath = path.join(__dirname, "..", "..", "videos", folder);
+        const usbPath = path.join(mp.path, folder);
+
+        const local = await fsPromises.readdir(localPath);
+        const usb = await fsPromises.readdir(usbPath);
+
+        if (local.length !== usb.length) return true;
+        return !local.every(file => usb.includes(file));
+    }
+
+    private async replaceFiles(mp: drivelist.Mountpoint, folder: "priority" | "regular") {
+        // TODO: Make this atomic swap?
+
+        const localPath = path.join(__dirname, "..", "..", "videos", folder);
+        const usbPath = path.join(mp.path, folder);
+        
+        const localFiles = await fsPromises.readdir(localPath);
+        for (const file of localFiles) {
+            await fsPromises.unlink(path.join(localPath, file));
+        }
+
+        const usbFiles = await fsPromises.readdir(usbPath);
+        for (const file of usbFiles) {
+            const src = path.join(usbPath, file);
+            const dest = path.join(localPath, file);
+
+            await fsPromises.copyFile(src, dest);
+        }
     }
 }
 
