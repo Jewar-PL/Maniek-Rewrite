@@ -6,7 +6,6 @@ import path from "path";
 
 import playlistService from "../services/playlist.service";
 
-// TODO: Handle priority and regular
 async function streamFile(req: Request, res: Response) {
     const { category, file } = req.params;
 
