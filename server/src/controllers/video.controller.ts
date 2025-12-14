@@ -4,6 +4,8 @@ import fs from "fs";
 import fsPromises from "fs/promises";
 import path from "path";
 
+import playlistService from "../services/playlist.service";
+
 // TODO: Handle priority and regular
 async function streamFile(req: Request, res: Response) {
     const { file } = req.params;
@@ -43,9 +45,11 @@ async function streamFile(req: Request, res: Response) {
     fs.createReadStream(filePath, { start, end }).pipe(res);
 }
 
-// TODO: Get actual playlist
+// TODO: Should it be async?
 async function getPlaylist(req: Request, res: Response) {
-    res.status(200).json(["LEGO1.mp4", "LEGO2.mp4"]);
+    const playlist = playlistService.playlist;
+
+    res.status(200).json(playlist);
 }
 
 export {
