@@ -5,6 +5,7 @@ import Info from "@/pages/Info";
 import TVPlayer from "@/pages/TVPlayer";
 
 import Layout from "@/Layout";
+import Minigames from "./pages/Minigames";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route element={<Layout />}>
           <Route index element={<Map />} />
           <Route path="info" element={<Info />} />
+          <Route path="minigames" element={<Minigames />} />
           {/* TODO: The rest of routes */}
         </Route>
 
