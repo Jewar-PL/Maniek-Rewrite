@@ -36,8 +36,35 @@ class PlaylistService {
     }
 
     private arrangePlaylist(priority: string[], regular: string[]): string[] {
-        // TODO: Actual algorithm
-        return [...priority, ...regular];
+        const pCount = priority.length;
+        const rCount = regular.length;
+
+        if (rCount === 0) return priority;
+        if (pCount === 0) return regular;
+        if (rCount === 0 && pCount === 0) return [];
+
+        let pIndex = 0;
+        let rIndex = 0;
+
+        const totalCycles = Math.ceil(rCount / 2) * pCount;
+        const playlist = [];
+
+        for (let cycle = 0; cycle < totalCycles; cycle++) {
+            playlist.push(priority[pIndex]);
+
+            for (let i = 0; i < 2; i++) {
+                playlist.push(regular[rIndex]);
+                rIndex++;
+                if (rIndex >= rCount) rIndex = 0;
+            }
+
+            pIndex++;
+            if (pIndex >= pCount) pIndex = 0;
+
+            if (playlist.length >= pCount + rCount * pCount) break;
+        }
+
+        return playlist;
     }
 
     public get playlist(): string[] {
