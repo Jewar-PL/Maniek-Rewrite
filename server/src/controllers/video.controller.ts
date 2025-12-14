@@ -8,9 +8,9 @@ import playlistService from "../services/playlist.service";
 
 // TODO: Handle priority and regular
 async function streamFile(req: Request, res: Response) {
-    const { file } = req.params;
+    const { category, file } = req.params;
 
-    const filePath = path.join(__dirname, "..", "..", "videos", file);
+    const filePath = path.join(__dirname, "..", "..", "videos", category, file);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).json({ error: "File not found" });
