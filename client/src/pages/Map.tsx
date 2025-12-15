@@ -1,7 +1,7 @@
+import LegacyMap from "@/components/legacy/map/LegacyMap";
+
 function Map() {
-    return (
-        <div>Mapa</div>
-    )
+    return <LegacyMap />;
 }
 
 export default Map;
